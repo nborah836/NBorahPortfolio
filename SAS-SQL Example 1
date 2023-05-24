@@ -1,0 +1,33 @@
+data Patienthealthdata;
+	input subjects $ 1-2
+	
+	prob1 3
+	
+	prob2 4
+	
+	prob3 5
+	
+	HR 6-8
+	
+	SBP 9-11
+	
+	DBP 12-14
+	;
+	datalines;
+11127 78130 80
+1787  82180110
+031   62120 78
+4261  68130 80
+89    58120 76
+9948  82178100
+;
+	
+	
+proc means data=patienthealthdata mean; 
+var  HR SBP DBP;
+Run;
+
+proc freq data= Patienthealthdata;
+table prob1 prob2 prob3;
+run;
+	
