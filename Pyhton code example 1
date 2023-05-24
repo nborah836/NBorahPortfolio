@@ -1,0 +1,40 @@
+Nathaniel Borah
+Ism4542
+Python 3
+
+# Histogram Code
+#importing of relevant packages
+Import numpy as np
+Import matplotlib.pyplot as plt
+
+# creating an array of 1000 random numbers
+Data = np.random.randn(1000)
+
+# plotting a histogram of data
+plt.hist(data, bins=50,density=True, color=’red’, edgecolor=’black)
+
+# Adding labels and title
+plt.xlabel(‘Value’)
+plt.ylabel(‘Frequency’)
+plt.title(‘Random number Histogram’)
+
+#display plot
+plt.show()
+
+#Scatterplot Code
+#importing of relevant packages
+Import numpy as np
+Import matplotlib.pyplot as plt
+
+# fixing random state for reproducibility
+Np.random.seed(19680801)
+
+N = 50
+X = np.random.rand(N)
+Y = np.random.rand(N)
+Colors = np.random.rand(N)
+Area = (30 * np.random.rand(N))**2
+
+Plt.scatter(x, y, s=area, c=colors, alpha=0.5)
+
+Plt.show()
