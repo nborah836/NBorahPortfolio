@@ -1,0 +1,95 @@
+import java.util.*; //importing util package
+
+class BubbleSort{
+
+
+
+
+
+ public static void bubbleSort(int[] list) {
+
+       int tmp = 0;
+
+        for(int i=list.length-1; i > 0; i--){
+
+                for(int j=0; j < i; j++){
+
+                  if(list[j] > list[j+1]){
+
+                               //elements swapping
+
+                                tmp = list[j];
+
+                                list[j] = list[j+1];
+
+                                list[j+1] = tmp;
+
+                        }
+
+                }
+
+        }
+
+}
+
+
+
+ public static void main(String[] args){
+
+   //declaring an array of 10 integers
+
+ int[] array = new int[10];
+
+
+
+//object of random number generator
+
+ Random r = new Random();
+
+
+
+//generating 10 random integers between 1 to 100
+
+ for(int i=0;i<10;i++)
+
+    array[i] = 1 + r.nextInt(100);
+
+
+
+//maxValue represents the maximum value of the array
+
+int maxValue = array[0];
+
+//determining the maximum value in the array
+
+for(int i=1;i<10;i++){
+
+ if(maxValue < array[i])
+
+   maxValue = array[i];
+
+}
+
+
+
+System.out.println("Maximum value in the array:  "+maxValue);
+
+System.out.println("The unsorted array is: ");
+
+ for(int i=0;i<10;i++)
+
+   System.out.print(array[i]+" ");
+
+bubbleSort(array);
+
+   System.out.println("\n\nThe sorted array is: ");
+
+     for(int i=0;i<10;i++)
+
+       System.out.print(array[i]+" ");
+
+   System.out.println();
+
+} //End of main() function
+
+}
