@@ -1,0 +1,25 @@
+//Nathnaiel Borah cop1000;
+import java.util.Scanner;
+import java.util.Random;
+
+public class ch5project {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner (System.in);
+		
+		System.out.println("Enter a value between 30 and 70: ");
+		int value = sc.nextInt(); 
+		
+		while(value<30 || value>70) {System.out.println("The vlaue is out of range. Please reenter: ");
+		value = sc.nextInt();}
+		
+		int count = 0;
+		for(int i=1; i<100; i++) {int rnd= (int) (Math.random()*101);
+		if (value > rnd) {count++;}
+		}
+		
+		System.out.print("The vlaue entered by user is:" + value);
+		System.out.println(" There are " + count + " random numbers greater than " + value +".");
+	}
+
+}
