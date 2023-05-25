@@ -1,0 +1,8 @@
+data a;
+infile '/home/u62414209/sasuser.v94/classwork/CARS.csv';
+input Make$ Model$ Horsepower;
+run;
+
+proc means data=a;
+run;
+
