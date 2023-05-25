@@ -1,0 +1,41 @@
+//Nathaniel Borah Cop1000
+
+import java.util.Scanner;
+
+public class ch8project {
+
+	public static double calcDistance(double[][] list) {
+		
+		// compute the distance
+		double xValue=(list[0][1]-list[1][1]) * 55;
+		double yValue=(list[0][0] - list[1][0]) * 69;
+		double distance = Math.sqrt(xValue*xValue + yValue*yValue);
+		return distance;
+	}
+	
+	public static void main(String[] args) {
+		
+		//system take in city names 
+		Scanner s=new Scanner(System.in);
+		String[] cityNames=new String[2];
+		double[][] LatitudeAndLongitude=new double[2][2];
+		
+		//prompt for cities
+		System.out.print("Enter the first city: ");
+		cityNames[0]=s.nextLine();
+		System.out.print("Enter the second city: ");
+		cityNames[1]=s.nextLine();
+		
+		//prompt for latitude and longituds
+		System.out.print("Enter latitude and longitude of first city seperated by space: ");
+		LatitudeAndLongitude[0][0]=s.nextDouble();
+		LatitudeAndLongitude[0][1]=s.nextDouble();
+		System.out.print("Enter latitude and longitude of second city seperated by a space: ");
+		LatitudeAndLongitude[1][0]=s.nextDouble();
+		LatitudeAndLongitude[1][1]=s.nextDouble();
+		
+		//call back for calculation
+		System.out.printf("The distance between the two citites is %.2f milies", calcDistance(LatitudeAndLongitude));
+	}
+
+}
