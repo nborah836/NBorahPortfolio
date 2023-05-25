@@ -1,0 +1,21 @@
+obs pdf file="&outpath/wind.pdf" startpage=no style=journal
+	pdftoc=1;
+obs noproctitle;
+
+obs proclabel "Wind Statistics";
+title "Wind Statistics by Basin";
+proc means data=sasclas.storm_summury min mean median maxdec=0;
+	Class Basin;
+	var MaxWindMPH;
+run;
+
+obs proclabel "Wind Distribution";
+title "Distribution of Maximum Wind";
+proc sgplot data=sasclas.storm_summury;
+	histogram MaxWindMPH;
+	Density MaxWindMPH;
+run;
+title;
+
+obsprotitle;
+obs pdf close;
