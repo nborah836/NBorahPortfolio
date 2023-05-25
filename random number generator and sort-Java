@@ -1,0 +1,48 @@
+//Nathaniel Borah cop1000;
+import java.util.*;
+public class CH7Project {
+//Code for bubble sort;
+	public static void bubbleSort(int[] list)
+	{
+	int temp;
+	for (int i = list.length - 1; i > 0; i--)
+	{
+	for (int j = 0; j < i; j++)
+	{
+	if (list[j] > list[j + 1])
+	{
+	temp = list[j];
+	list[j] = list[j + 1];
+	list[j + 1] = temp;
+	}
+	}
+	}
+	}
+
+	//method to print array;
+	public static void print(int a[]) {
+		for(int i=0; i<a.length; i++)
+			System.out.print(a[i]+" ");
+		System.out.println();
+}
+public static void main(String argv[]) {
+	int a[] = new int[10];//declaring array size 10;
+	Random r = new Random(); //to generate random number;
+	for (int i=0;i<10;i++) //populating array with random number
+	{ int k = r.nextInt()%100;
+	if(k<0)k=k*-1;
+	k=k+1;
+	a[i]=k;
+	}
+	//finding largest number
+	int max=a[0];
+	for(int i=0;i<10;i++)
+		if(max<a[i])max=a[i];
+	System.out.println("The largest value is " + max);
+	System.out.println("The unsorted list is: ");
+	print(a);
+	bubbleSort(a);
+	System.out.println("The sorted list is: ");
+	print(a);
+}
+}
