@@ -6,6 +6,13 @@ import numpy as np  # impor of numpy into program
 df = pd.read_csv('2017_Yellow_Taxi_Trip_Data.csv')
 print("done")
 
+# gather info about data
+df.head(10)
+
+df.infor()
+
+df.describe()
+
 # Sort the data by trip distance from maximum to minimum value
 
 df_sort = df.sort_values(by=['trip_distance'],acesnding=False)
