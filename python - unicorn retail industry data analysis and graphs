@@ -61,7 +61,7 @@ plt.bar(companies_sample["Industry"], companies_sample["Year Joined"] - companie
 
 # Set title
 
-plt.title=("Bar plot of maximum years taken by company to become unicorn per industry (from sample)")
+plt.title("Bar plot of maximum years taken by company to become unicorn per industry (from sample)")
 
 
 # Set x-axis label
@@ -104,7 +104,7 @@ plt.bar(companies_sample["Industry"], companies_sample["valuation_billions"])
 
 # Set title
 
-plt.title=("Bar plot of maximum unicorn company valuation per industry (from sample)")
+plt.title("Bar plot of maximum unicorn company valuation per industry (from sample)")
 
 
 # Set x-axis label
