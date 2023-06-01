@@ -1,0 +1,139 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import plotly.express as px
+import seaborn as sns
+
+# RUN THIS CELL TO IMPORT YOUR DATA.
+
+df_companies = pd.read_csv("Unicorn_Companies.csv")
+
+# Display the first 10 rows of the data.
+df_companies.head(10)
+
+# Get the shape of the dataset.
+
+df_companies.shape
+
+# Get the data types and number of non-null values in the dataset.
+
+df_companies.info()
+
+# Get the range of different values in the dataset.
+
+df_companies.describe()
+
+# Create a new column "Year Joined" from "Date Joined".
+
+df_companies["Year_Joined"] = pd.to_datetime(df_companies["Date Joined"]).dt.year
+
+# Remove the extra characters from the Valuation column.
+
+df_companies['Valuation_num']=df_companies['Valuation'].str.strip('$B')
+
+# Convert the column to numeric
+
+df_companies['Valutio0n_num']=pd.to_numeric(df_companies['Valuation_num'])
+
+# Find the number of missing values in each column in this dataset.
+
+df_companies.isna().sum()
+
+# Filter the DataFrame to only include rows with at least one missing value.
+# Assign the filtered results to a variable named "df_rows_missing" and display the contents of the variable.
+
+df_rows_missing=df_companies[df_companies.isna().any(axis=1)]
+
+df_rows_missing
+
+# Find the number of missing values after replacing 'Asia' with `np.nan`.
+
+df_companies.replace('Asia', np.nan).isna().sum()
+
+# Store the total number of values in a variable.
+
+count_total = df_companies.size
+
+# Drop the rows containing missing values. 
+
+count_dropna_rows = df_companies.dropna().size
+
+# Drop the columns containing missing values.
+
+count_dropna_columns = df_companies.dropna(axis=1).size
+
+# Print the percentage of values removed by dropping rows.
+
+print(count_dropna_rows/count_total*100)
+
+# Print the percentage of values removed by dropping columns.
+
+print(count_dropna_columns/count_total*100)
+
+# Fill missing values using 'backfill' method.
+
+df_companies_backfill=df_companies.fillna(method='backfill')
+
+# Showing the rows that previously had missing values.
+
+df_companies_backfill.loc[df_rows_missing.index]
+
+# Investing search criteria provided as a DataFrame.
+
+df_search=pd.DataFrame({
+        'City':['Beijing', 'San Francisco', 'London', 'London'],
+        'Industry':['Hardware', 'Hardware', 'Artificial intelligence', 'Hardware']
+        })
+df_invest=df_search.merge(df_companies, on=['City', 'Industry'])
+print(df_invest[['City', 'Industry', 'Company']])
+
+#Group the data by`Country/Region`
+
+df_companies_sum=df_companies.groupby(['Country/Region'])['Valuation_num'].sum().sort_values(ascending=False).reset_index()
+
+#Print the top 15 values of the DataFrame.
+
+print(df_companies_sum.head(15))
+
+# Create a boxlot to identify outliers.
+
+plt.boxplot(df_companies_sum['Valuation_num'])
+
+# Show the plot.
+
+plt.show()
+
+# Remove outlier countries.
+
+df_companies_sum_outliers_removed=df_companies_sum[~df_companies_sum['Country/Region'].isin(['China', 'United States','India','United Kingdom'])]
+
+# Plot the sum of valuations per country.
+
+px.scatter_geo(df_companies_sum[
+    df_companies["Year_Joined"]>2020
+    ], locations='Country/Region', size='Valuation_num', locationmode='country names', color='Country/Region')
+    
+# Plot the sum of valuations per country.
+
+fig = px.scatter_geo(df_companies_sum_outliers_removed, 
+                     locations='Country/Region', 
+                     size='Valuation_num', 
+                     locationmode='country names', 
+                     color='Country/Region', 
+                     title='Global Unicorn Company Values')
+
+# Show the plot.
+
+fig.show()
+
+# Update the figure layout.
+
+fig.update_layout(
+    title_text = 'Europe Unicorn Company Values', # Create a Title
+    geo_scope='europe',  # Plot only the Europe instead of globe
+)
+
+# Show the plot again.
+
+fig.show()
+
