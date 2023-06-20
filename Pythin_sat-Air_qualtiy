@@ -1,0 +1,42 @@
+# Import relevant Python libraries.
+
+import pandas as pd
+import numpy as np
+
+# RUN THIS CELL TO IMPORT YOUR DATA.
+
+epa_data = pd.read_csv("c4_epa_air_quality.csv", index_col = 0)
+
+# Display first 10 rows of the data.
+
+epa_data.head(10)
+
+# Get descriptive stats.
+
+epa_data.describe()
+
+# Get descriptive stats about the states in the data.
+
+epa_data["state_name"].describe()
+
+# Compute the mean value from the aqi column.
+
+np.mean(epa_data["aqi"])
+
+# Compute the median value from the aqi column.
+
+np.median(epa_data["aqi"])
+
+# Identify the minimum value from the aqi column.
+
+np.min(epa_data["aqi"])
+
+# Identify the maximum value from the aqi column.
+
+np.max(epa_data["aqi"])
+
+
+# Compute the standard deviation for the aqi column.
+
+np.std(epa_data["aqi"], ddof=1)
+
