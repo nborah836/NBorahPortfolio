@@ -1,0 +1,127 @@
+# Import relevant libraries, packages, and modules.
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+from scipy import stats
+
+# RUN THIS CELL TO IMPORT YOUR DATA.
+
+
+data = pd.read_csv("modified_c4_epa_air_quality.csv")
+
+# Display first 10 rows of the data.
+
+data.head(10)
+
+# Display number of rows, number of columns.
+
+data.shape
+
+# Create a histogram to visualize distribution of aqi_log.
+
+data["aqi_log"].hist();
+
+# Create QQ plot for aqi_log data.
+
+fig = sm.qqplot(data["aqi_log"], line='s')
+plt.show()
+
+# Define variable for aqi_log mean.
+
+mean_aqi_log = data["aqi_log"].mean()
+
+
+# Print out the mean.
+
+print(mean_aqi_log)
+
+# Define variable for aqi_log standard deviation.
+
+std_aqi_log = data["aqi_log"].std()
+
+
+
+# Print out the standard deviation.
+
+print(std_aqi_log)
+
+# Define variable for lower limit, 1 standard deviation below the mean.
+
+lower_limit = mean_aqi_log - 1 * std_aqi_log
+
+
+
+# Define variable for upper limit, 1 standard deviation above the mean.
+
+upper_limit = mean_aqi_log + 1 * std_aqi_log
+
+
+
+
+# Display lower_limit, upper_limit.
+
+print(lower_limit, upper_limit)
+
+# Display the actual percentage of data that falls within 1 standard deviation of the mean.
+
+((data["aqi_log"] >= lower_limit) & (data["aqi_log"] <= upper_limit)).mean() * 100
+
+# Define variable for lower limit, 2 standard deviations below the mean.
+
+lower_limit = mean_aqi_log - 2 * std_aqi_log
+
+
+
+
+# Define variable for upper limit, 2 standard deviations below the mean.
+
+upper_limit = mean_aqi_log + 2 * std_aqi_log
+
+
+
+
+# Display lower_limit, upper_limit.
+
+print(lower_limit, upper_limit)
+
+# Display the actual percentage of data that falls within 2 standard deviations of the mean.
+
+((data["aqi_log"] >= lower_limit) & (data["aqi_log"] <= upper_limit)).mean() * 100
+
+# Define variable for lower limit, 3 standard deviations below the mean.
+
+lower_limit = mean_aqi_log - 3 * std_aqi_log
+
+
+
+# Define variable for upper limit, 3 standard deviations above the mean.
+
+upper_limit = mean_aqi_log + 3 * std_aqi_log
+
+
+
+
+# Display lower_limit, upper_limit.
+
+print(lower_limit, upper_limit)
+
+# Display the actual percentage of data that falls within 3 standard deviations of the mean.
+
+((data["aqi_log"] >= lower_limit) & (data["aqi_log"] <= upper_limit)).mean() * 100
+
+# Compute the z-score for every aqi_log value, and add a column named z_score in the data to store those results.
+
+data["z_score"] = stats.zscore(data["aqi_log"])
+
+
+
+
+# Display the first 5 rows to ensure that the new column was added.
+
+data.head()
+
+# Display data where `aqi_log` is above or below 3 standard deviations of the mean
+
+data[(data["z_score"] > 3) | (data["z_score"] < -3)]
