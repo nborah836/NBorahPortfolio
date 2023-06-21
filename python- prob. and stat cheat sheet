@@ -1,0 +1,40 @@
+*imports for stats
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy import stats
+import statsmodels.api as sm
+
+*example data
+education_districtwise = pd.read_csv('education_districtwise.csv')
+education_districtwise = education_districtwise.dropna()
+
+*histgram
+education_districtwise['OVERALL_LI'].hist()
+
+*overall mean
+mean_overall_li = education_districtwise['OVERALL_LI'].mean()
+mean_overall_li
+
+*standard div
+std_overall_li = education_districtwise['OVERALL_LI'].std()
+std_overall_li
+
+*limits
+lower_limit = mean_overall_li - 1 * std_overall_li
+upper_limit = mean_overall_li + 1 * std_overall_li
+((education_districtwise['OVERALL_LI'] >= lower_limit) & (education_districtwise['OVERALL_LI'] <= upper_limit)).mean()
+
+lower_limit = mean_overall_li - 2 * std_overall_li
+upper_limit = mean_overall_li + 2 * std_overall_li
+((education_districtwise['OVERALL_LI'] >= lower_limit) & (education_districtwise['OVERALL_LI'] <= upper_limit)).mean()
+
+lower_limit = mean_overall_li - 3 * std_overall_li
+upper_limit = mean_overall_li + 3 * std_overall_li
+((education_districtwise['OVERALL_LI'] >= lower_limit) & (education_districtwise['OVERALL_LI'] <= upper_limit)).mean()
+
+*z-scores
+education_districtwise['Z_SCORE'] = stats.zscore(education_districtwise['OVERALL_LI'])
+education_districtwise
+
+education_districtwise[(education_districtwise['Z_SCORE'] > 3) | (education_districtwise['Z_SCORE'] < -3)]
