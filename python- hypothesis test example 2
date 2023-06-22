@@ -1,0 +1,58 @@
+# Import relevant packages
+
+import pandas as pd
+import numpy as np
+from scipy import stats
+
+# RUN THIS CELL TO IMPORT YOUR DATA.
+
+aqi = pd.read_csv('c4_epa_air_quality.csv')
+
+# Explore your dataframe `aqi` here:
+
+print("Use head() to show a sample of data")
+print(aqi.head())
+
+print("Use describe() to summarize AQI")
+print(aqi.describe(include='all'))
+
+print("For a more thorough examination of observations by state use values_counts()")
+print(aqi['state_name'].value_counts())
+
+print('for a more')
+
+# Create dataframes for each sample being compared in your test
+
+ca_la = aqi[aqi['county_name']=='Los Angeles']
+ca_other = aqi[(aqi['state_name']=='California') & (aqi['county_name']!='Los Angeles')]
+
+# For this analysis, the significance level is 5%
+
+significance_level = 0.05
+significance_level
+
+# Compute your p-value here
+
+stats.ttest_ind(a=ca_la['aqi'], b=ca_other['aqi'], equal_var=False)
+
+# Create dataframes for each sample being compared in your test
+
+ny = aqi[aqi['state_name']=='New York']
+ohio = aqi[aqi['state_name']=='Ohio']
+
+# Computer your p-value here
+
+tstat, pvalue = stats.ttest_ind(a=ny['aqi'], b=ohio['aqi'], alternative='less')
+print(tstat)
+print(pvalue)
+
+# Create dataframes for each sample being compared in your test
+
+michigan = aqi[aqi['state_name']=='Michigan']
+
+# Computer your p-value here
+
+tstat, pvalue = stats.ttest_1samp(michigan['aqi'], 10, alternative='greater')
+print(tstat)
+print(pvalue)
+
