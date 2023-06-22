@@ -1,0 +1,26 @@
+*import tools
+import pandas as pd
+from scipy import stats
+
+education_districtwise = pd.read_csv("education_districtwise.csv")
+education_districtwise = education_districtwise.dropna()
+
+*organize data
+state21 = education_districtwise[education_districtwise['STATNAME'] == "STATE21"]
+
+state28 = education_districtwise[education_districtwise['STATNAME'] == "STATE28"]
+
+*take a sample
+sampled_state21 = state21.sample(n=20, replace = True, random_state=13490)
+
+sampled_state28 = state28.sample(n=20, replace = True, random_state=39103)
+
+*compute sample means
+sampled_state21['OVERALL_LI'].mean()
+
+sampled_state28['OVERALL_LI'].mean()
+
+*out of code 1. state null and alt hypothis 2. choose sigfgance level 3. fine p value
+
+*finding p value
+stats.ttest_ind(a=sampled_state21['OVERALL_LI'], b=sampled_state28['OVERALL_LI'], equal_var=False)
