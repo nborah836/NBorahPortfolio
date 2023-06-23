@@ -1,0 +1,69 @@
+# Import packages
+import pandas as pd
+import seaborn as sns
+
+# Load dataset
+penguins = sns.load_dataset("penguins")
+
+# Examine first 5 rows of dataset
+penguins.head()
+
+# Keep Adelie and Gentoo penguins, drop missing values
+penguins_sub = penguins[penguins["species"] != "Chinstrap"]
+penguins_final = penguins_sub.dropna()
+penguins_final.reset_index(inplace=True, drop=True)
+
+# Create pairwise scatterplots of data set
+sns.pairplot(penguins_final)
+
+# Subset Data
+ols_data = penguins_final[["bill_length_mm", "body_mass_g"]]
+
+# Write out formula
+ols_formula = "body_mass_g ~ bill_length_mm"
+
+# Import ols function
+from statsmodels.formula.api import ols
+
+# Build OLS, fit model to data
+OLS = ols(formula = ols_formula, data = ols_data)
+model = OLS.fit()
+
+model.summary()
+
+sns.regplot(x = "bill_length_mm", y = "body_mass_g", data = ols_data)
+
+# Subset X variable
+X = ols_data["bill_length_mm"]
+
+# Get predictions from model
+fitted_values = model.predict(X)
+
+# Calculate residuals
+residuals = model.resid
+
+import matplotlib.pyplot as plt
+fig = sns.histplot(residuals)
+fig.set_xlabel("Residual Value")
+fig.set_title("Histogram of Residuals")
+plt.show()
+
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+fig = sm.qqplot(model.resid, line = 's')
+plt.show()
+
+# Import matplotlib
+import matplotlib.pyplot as plt
+fig = sns.scatterplot(x=fitted_values, y=residuals)
+
+# Add reference line at residuals = 0
+fig.axhline(0)
+
+# Set x-axis and y-axis labels
+fig.set_xlabel("Fitted Values")
+fig.set_ylabel("Residuals")
+
+# Show the plot
+plt.show()
+
