@@ -1,0 +1,137 @@
+# Import pandas, pyplot from matplotlib, and seaborn.
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Import the statsmodel module.
+
+import statsmodels.api as sm
+
+# Import the ols function from statsmodels.
+
+from statsmodels.formula.api import ols
+
+# RUN THIS CELL TO IMPORT YOUR DATA. 
+
+### YOUR CODE HERE ###
+data = pd.read_csv('modified_marketing_and_sales_data.csv')
+
+# Display the first five rows.
+
+data.head()
+
+# Display the shape of the data as a tuple (rows, columns).
+
+data.shape
+
+# Generate descriptive statistics about TV, Radio, and Social_Media.
+
+data[['TV','Radio','Social_Media']].describe()
+
+# Calculate the average missing rate in the sales column.
+
+missing_sales = data.Sales.isna().mean()
+
+# Convert the missing_sales from a decimal to a percentage and round to 2 decimal place.
+
+missing_sales = round(missing_sales*100, 2)
+
+# Display the results (missing_sales must be converted to a string to be concatenated in the print statement).
+
+print('Percentage of promotions missing Sales: ' +  str(missing_sales) + '%')
+
+# Subset the data to include rows where Sales is present.
+
+data = data.dropna(subset = ['Sales'], axis = 0)
+
+# Create a histogram of the Sales.
+
+fig = sns.histplot(data['Sales'])
+
+# Add a title
+fig.set_title('Distribution of Sales');
+
+# Create a pairplot of the data.
+
+sns.pairplot(data)
+
+# Define the OLS formula.
+ols_formula = 'Sales ~ TV'
+
+# Create an OLS model.
+OLS = ols(formula = ols_formula, data = data)
+
+# Fit the model.
+model = OLS.fit()
+
+# Save the results summary.
+model_results = model.summary()
+
+# Display the model results.
+model_results
+
+# Create a scatterplot comparing X and Sales (Y).
+
+sns.scatterplot(x = data['TV'], y = data['Sales']);
+
+# Calculate the residuals.
+
+
+residuals = model.resid
+
+# Create a 1x2 plot figure.
+fig, axes = plt.subplots(1, 2, figsize = (8,4))
+
+# Create a histogram with the residuals .
+
+
+sns.histplot(residuals, ax=axes[0])
+
+# Set the x label of the residual plot.
+axes[0].set_xlabel("Residual Value")
+
+# Set the title of the residual plot.
+axes[0].set_title("Histogram of Residuals")
+
+# Create a Q-Q plot of the residuals.
+
+sm.qqplot(residuals, line='s',ax = axes[1])
+
+# Set the title of the Q-Q plot.
+axes[1].set_title("Normal Q-Q plot")
+
+# Use matplotlib's tight_layout() function to add space between plots for a cleaner appearance.
+plt.tight_layout()
+
+# Show the plot.
+plt.show()
+
+# Create a scatterplot with the fitted values from the model and the residuals.
+ 
+
+fig = sns.scatterplot(x = model.fittedvalues, y = model.resid)
+
+# Set the x-axis label.
+fig.set_xlabel("Fitted Values")
+
+# Set the y-axis label.
+fig.set_ylabel("Residuals")
+
+# Set the title.
+fig.set_title("Fitted Values v. Residuals")
+
+# Add a line at y = 0 to visualize the variance of residuals above and below 0.
+
+fig.axhline(0)
+
+# Show the plot.
+plt.show()
+
+# Display the model_results defined previously.
+
+model_results
+
+# Display the model_results defined previously.
+
+model_results
