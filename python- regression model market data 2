@@ -1,0 +1,106 @@
+# Import relevant Python libraries and modules.
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from statsmodels.formula.api import ols
+import statsmodels.api as sm
+
+# RUN THIS CELL TO IMPORT YOUR DATA.
+
+data = pd.read_csv("marketing_sales_data.csv")
+
+# Display the first 10 rows of the data.
+
+data.head(10)
+
+# Display number of rows, number of columns.
+
+data.shape
+
+# Start with .isna() to get booleans indicating whether each value in the data is missing.
+
+data.isna()
+
+# Use .any(axis=1) to get booleans indicating whether there are any missing values along the columns in each row.
+
+data.isna().any(axis=1)
+
+# Use .sum() to get the number of rows that contain missing values.
+
+data.isna().any(axis=1).sum()
+
+# Use .dropna(axis=0) to indicate that you want rows which contain missing values to be dropped. To update the DataFrame, reassign it to the result.
+
+data = data.dropna(axis=0)
+
+# Start with .isna() to get booleans indicating whether each value in the data is missing.
+# Use .any(axis=1) to get booleans indicating whether there are any missing values along the columns in each row.
+# Use .sum() to get the number of rows that contain missing values
+
+data.isna().any(axis=1).sum()
+
+# Create plot of pairwise relationships.
+
+sns.pairplot(data)
+
+# Select relevant columns.
+# Save resulting DataFrame in a separate variable to prepare for regression.
+
+ols_data = data[["Radio", "Sales"]]
+
+# Display first 10 rows of the new DataFrame.
+
+ols_data.head(10)
+
+# Write the linear regression formula.
+# Save it in a variable.
+
+ols_formula = "Sales ~ Radio"
+
+# Implement OLS.
+
+OLS = ols(formula = ols_formula, data = ols_data)
+
+# Fit the model to the data.
+# Save the fitted model in a variable.
+
+model = OLS.fit()
+
+# Get summary of results.
+
+model.summary()
+
+# Plot the OLS data with the best fit regression line.
+
+sns.regplot(x = "Radio", y = "Sales", data = ols_data)
+
+# Get the residuals from the model.
+
+residuals = model.resid
+
+# Visualize the distribution of the residuals.
+
+fig = sns.histplot(residuals)
+fig.set_xlabel("Residual Value")
+fig.set_title("Histogram of Residuals")
+plt.show()
+
+# Create a Q-Q plot.
+
+sm.qqplot(residuals, line='s')
+plt.title("Q-Q plot of Residuals")
+plt.show()
+
+# Get fitted values.
+
+fitted_values = model.predict(ols_data["Radio"])
+
+# Create a scatterplot of residuals against fitted values.
+
+fig = sns.scatterplot(x=fitted_values, y=residuals)
+fig.axhline(0)
+fig.set_xlabel("Fitted Values")
+fig.set_ylabel("Residuals")
+plt.show()
+
