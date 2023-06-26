@@ -1,0 +1,146 @@
+# Import pandas and seaborn packages
+import pandas as pd
+import seaborn as sns
+
+# Load in diamonds data set from seaborn package
+diamonds = sns.load_dataset("diamonds")
+
+# Examine first 5 rows of data set
+diamonds.head()
+
+# Check how many diamonds are each color grade
+diamonds["color"].value_counts()
+
+# Subset for colorless diamonds
+colorless = diamonds[diamonds["color"].isin(["E","F","H","D","I"])]
+
+# Select only color and price columns, and reset index
+colorless = colorless[["color","price"]].reset_index(drop=True)
+
+# Remove dropped categories of diamond color
+colorless.color = colorless.color.cat.remove_categories(["G","J"])
+
+# Check that the dropped categories have been removed
+colorless["color"].values
+
+# Import math package
+import math
+
+# Take the logarithm of the price, and insert it as the third column
+colorless.insert(2, "log_price", [math.log(price) for price in colorless["price"]])
+
+# Drop rows with missing values
+colorless.dropna(inplace=True)
+
+# Reset index
+colorless.reset_index(inplace=True, drop=True)
+
+# Examine first 5 rows of cleaned data set
+colorless.head()
+
+# Save to diamonds.csv
+colorless.to_csv('diamonds.csv',index=False,header=list(colorless.columns))
+
+# Save diamonds.csv as a variable called diamonds
+diamonds = pd.read_csv("diamonds.csv")
+
+# Examine first 5 rows of diamonds data set
+diamonds.head()
+
+# Create boxplot to show distribution of price by color grade
+sns.boxplot(x = "color", y = "log_price", data = diamonds)
+
+# Import statsmodels and ols function
+import statsmodels.api as sm
+from statsmodels.formula.api import ols
+
+# Construct simple linear regression model, and fit the model
+model = ols(formula = "log_price ~ C(color)", data = diamonds).fit()
+
+# Get summary statistics
+model.summary()
+
+# Run one-way ANOVA
+sm.stats.anova_lm(model, typ = 2)
+
+sm.stats.anova_lm(model, typ = 1)
+
+sm.stats.anova_lm(model, typ = 3)
+
+# Import diamonds data set from seaborn package
+diamonds = sns.load_dataset("diamonds")
+
+# Examine first 5 rows of data set
+diamonds.head()
+
+# Subset for color, cut, price columns
+diamonds2 = diamonds[["color","cut","price"]]
+
+# Only include colorless diamonds
+diamonds2 = diamonds2[diamonds2["color"].isin(["E","F","H","D","I"])]
+
+# Drop removed colors, G and J
+diamonds2.color = diamonds2.color.cat.remove_categories(["G","J"])
+
+# Only include ideal, premium, and very good diamonds
+diamonds2 = diamonds2[diamonds2["cut"].isin(["Ideal","Premium","Very Good"])]
+
+# Drop removed cuts
+diamonds2.cut = diamonds2.cut.cat.remove_categories(["Good","Fair"])
+
+# Drop NaNs
+diamonds2.dropna(inplace = True)
+
+# Reset index
+diamonds2.reset_index(inplace = True, drop = True)
+
+# Add column for logarithm of price
+diamonds2.insert(3,"log_price",[math.log(price) for price in diamonds2["price"]])
+
+# Examine the data set
+diamonds2.head()
+
+# Save as diamonds2.csv
+diamonds2.to_csv('diamonds2.csv',index=False,header=list(diamonds2.columns))
+
+# Load the data set
+diamonds2 = pd.read_csv("diamonds2.csv")
+
+# Construct a multiple linear regression with an interaction term between color and cut
+model2 = ols(formula = "log_price ~ C(color) + C(cut) + C(color):C(cut)", data = diamonds2).fit()
+
+# Get summary statistics
+model2.summary()
+
+# Run two-way ANOVA
+sm.stats.anova_lm(model2, typ = 2)
+
+sm.stats.anova_lm(model2, typ = 1)
+
+sm.stats.anova_lm(model2, typ = 3
+
+# Import statsmodels package and ols function
+import statsmodels.api as sm
+from statsmodels.formula.api import ols
+
+# Load in the data set from one-way ANOVA
+diamonds = pd.read_csv("diamonds.csv")
+
+# Construct simple linear regression model, and fit the model
+model = ols(formula = "log_price ~ C(color)", data = diamonds).fit()
+
+# Get summary statistics
+model.summary()
+
+# Run one-way ANOVA
+sm.stats.anova_lm(model, typ=2)
+
+# Import Tukey's HSD function
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
+# Run Tukey's HSD post hoc test for one-way ANOVA
+tukey_oneway = pairwise_tukeyhsd(endog = diamonds["log_price"], groups = diamonds["color"], alpha = 0.05)
+
+# Get results (pairwise comparisons)
+tukey_oneway.summary()
+
