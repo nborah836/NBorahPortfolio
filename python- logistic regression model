@@ -1,0 +1,61 @@
+# Import pandas and seaborn packages
+import pandas as pd
+import seaborn as sns
+
+# Load in if csv file is in the same folder as notebook
+activity = pd.read_csv("activity.csv")
+
+# Get summary statistics about the dataset
+activity.describe()
+
+# Examine the dataset
+activity.head()
+
+# Load in sci-kit learn functions for constructing logistic regression
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+
+# Save X and y data into variables
+X = activity[["Acc (vertical)"]]
+y = activity[["LyingDown"]]
+
+# Split dataset into training and holdout datasets
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.3, random_state=42)
+
+clf = LogisticRegression().fit(X_train,y_train)
+
+# Print the coefficient
+clf.coef_
+
+# Print the intercept
+clf.intercept_
+
+# Plot the logistic regression and its confidence band
+sns.regplot(x="Acc (vertical)", y="LyingDown", data=activity, logistic=True)
+
+# Split data into training and holdout samples
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Build regression model
+clf = LogisticRegression().fit(X_train,y_train)
+
+# Save predictions
+y_pred = clf.predict(X_test)
+
+# Print out the predicted labels
+clf.predict(X_test)
+
+# Print out the predicted probabilities
+clf.predict_proba(X_test)[::,-1]
+
+# Import the metrics module from scikit-learn
+import sklearn.metrics as metrics
+
+# Calculate the values for each quadrant in the confusion matrix
+cm = metrics.confusion_matrix(y_test, y_pred, labels = clf.classes_)
+
+# Create the confusion matrix as a visualization
+disp = metrics.ConfusionMatrixDisplay(confusion_matrix = cm,display_labels = clf.classes_)
+
+# Display the confusion matrix
+disp.plot()
