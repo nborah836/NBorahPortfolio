@@ -1,0 +1,98 @@
+# Import relevant libraries and modules.
+
+import pandas as pd
+from sklearn import naive_bayes
+from sklearn import model_selection
+from sklearn import metrics
+
+# RUN THIS CELL TO IMPORT YOUR DATA.
+# Load extracted_nba_players.csv into a DataFrame called extracted_data.
+
+extracted_data = pd.read_csv('extracted_nba_players.csv')
+
+# Display the first 10 rows of data.
+
+extracted_data.head(10)
+
+# Define the y (target) variable.
+
+y = extracted_data['target_5yrs']
+
+
+# Define the X (predictor) variables.
+
+X = extracted_data.drop('target_5yrs', axis = 1)
+
+# Display the first 10 rows of your target data.
+
+y.head(10)
+
+# Display the first 10 rows of your predictor variables.
+
+X.head(10)
+
+# Perform the split operation on your data.
+# Assign the outputs as follows: X_train, X_test, y_train, y_test.
+
+X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, test_size=0.25, random_state=0)
+
+# Print the shape (rows, columns) of the output from the train-test split.
+# Print the shape of X_train.
+
+print(X_train.shape)
+
+
+# Print the shape of X_test.
+
+print(X_test.shape)
+
+# Print the shape of y_train.
+
+print(y_train.shape)
+
+# Print the shape of y_test.
+
+print(y_test.shape)
+
+# Assign `nb` to be the appropriate implementation of Naive Bayes.
+
+nb = naive_bayes.GaussianNB()
+
+# Fit the model on your training data.
+
+nb.fit(X_train, y_train)
+
+# Apply your model to predict on your test data. Call this "y_pred".
+
+y_pred = nb.predict(X_test)
+
+# Print your accuracy score.
+
+print('accuracy score:'), print(metrics.accuracy_score(y_test, y_pred))
+
+# Print your precision score.
+
+print('precision score:'), print(metrics.precision_score(y_test, y_pred))
+
+# Print your recall score.
+
+print('recall score:'), print(metrics.recall_score(y_test, y_pred))
+
+# Print your f1 score.
+
+print('f1 score:'), print(metrics.f1_score(y_test, y_pred))
+
+# Construct and display your confusion matrix.
+
+# Construct the confusion matrix for your predicted and test values.
+
+cm = metrics.confusion_matrix(y_test, y_pred)
+
+# Create the display for your confusion matrix.
+
+disp = metrics.ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=nb.classes_)
+
+# Plot the visual in-line.
+
+disp.plot()
+
