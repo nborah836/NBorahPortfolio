@@ -1,0 +1,155 @@
+# Import relevant libraries and modules.
+
+import numpy as np
+import pandas as pd
+import matplotlib as plt
+import pickle
+
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GridSearchCV
+from sklearn import metrics
+
+from xgboost import XGBClassifier
+from xgboost import plot_importance
+
+# RUN THIS CELL TO IMPORT YOUR DATA. 
+
+airline_data = pd.read_csv('Invistico_Airline.csv', error_bad_lines=False)
+
+# Display the first ten rows of data.
+
+airline_data.head(10)
+
+# Display the data type for each column in your DataFrame.
+
+airline_data.dtypes
+
+# Convert the object predictor variables to numerical dummies.
+
+airline_data_dummies = pd.get_dummies(airline_data, 
+                                         columns=['satisfaction','Customer Type','Type of Travel','Class'])
+
+# Define the y (target) variable.
+
+y = airline_data_dummies['satisfaction_satisfied']
+
+# Define the X (predictor) variables.
+
+X = airline_data_dummies.drop(['satisfaction_satisfied','satisfaction_dissatisfied'], axis = 1)
+
+# Perform the split operation on your data.
+# Assign the outputs as follows: X_train, X_test, y_train, y_test.
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
+
+# Define xgb to be your XGBClassifier.
+
+xgb = XGBClassifier(objective='binary:logistic', random_state=0)
+
+# Define parameters for tuning as `cv_params`.
+
+cv_params = {'max_depth': [4, 6],
+              'min_child_weight': [3, 5],
+              'learning_rate': [0.1, 0.2, 0.3],
+              'n_estimators': [5,10,15],
+              'subsample': [0.7],
+              'colsample_bytree': [0.7]
+              }
+
+# Define your criteria as `scoring`.
+
+scoring = {'accuracy', 'precision', 'recall', 'f1'}
+
+# Construct your GridSearch.
+
+xgb_cv = GridSearchCV(xgb,
+                      cv_params,
+                      scoring = scoring,
+                      cv = 5,
+                      refit = 'f1'
+                     )
+
+%%time
+# fit the GridSearch model to training data
+
+xgb_cv = xgb_cv.fit(X_train, y_train)
+xgb_cv
+
+# Use `pickle` to save the trained model.
+
+pickle.dump(xgb_cv, open('xgb_cv.sav', 'wb'))
+
+# Apply your model to predict on your test data. Call this output "y_pred".
+
+y_pred = xgb_cv.predict(X_test)
+
+# 1. Print your accuracy score.
+
+ac_score = metrics.accuracy_score(y_test, y_pred)
+print('accuracy score:', ac_score)
+
+# 2. Print your precision score.
+
+pc_score = metrics.precision_score(y_test, y_pred)
+print('precision score:', pc_score)
+
+# 3. Print your recall score.
+
+rc_score = metrics.recall_score(y_test, y_pred)
+print('recall score:', rc_score)
+
+# 4. Print your f1 score.
+
+f1_score = metrics.f1_score(y_test, y_pred)
+print('f1 score:', f1_score)
+
+# Construct and display your confusion matrix.
+
+# Construct the confusion matrix for your predicted and test values.
+
+cm = metrics.confusion_matrix(y_test, y_pred)
+
+# Create the display for your confusion matrix.
+
+disp = metrics.ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=xgb_cv.classes_)
+
+# Plot the visual in-line.
+
+disp.plot()
+
+# Plot the relative feature importance of the predictor variables in your model.
+
+plot_importance(xgb_cv.best_estimator_)
+
+# Create a table of results to compare model performance.
+
+table = pd.DataFrame()
+table = table.append({'Model': "Tuned Decision Tree",
+                        'F1':  0.945422,
+                        'Recall': 0.935863,
+                        'Precision': 0.955197,
+                        'Accuracy': 0.940864
+                      },
+                        ignore_index=True
+                    )
+
+table = table.append({'Model': "Tuned Random Forest",
+                        'F1':  0.947306,
+                        'Recall': 0.944501,
+                        'Precision': 0.950128,
+                        'Accuracy': 0.942450
+                      },
+                        ignore_index=True
+                    )
+
+table = table.append({'Model': "Tuned XGBoost",
+                        'F1':  f1_score,
+                        'Recall': rc_score,
+                        'Precision': pc_score,
+                        'Accuracy': ac_score
+                      },
+                        ignore_index=True
+                    )
+
+table
+
