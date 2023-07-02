@@ -1,0 +1,174 @@
+# Import `numpy`, `pandas`, `pickle`, and `sklearn`.
+# Import the relevant functions from `sklearn.ensemble`, `sklearn.model_selection`, and `sklearn.metrics`.
+
+import numpy as np
+import pandas as pd
+
+import pickle as pkl
+ 
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split, PredefinedSplit, GridSearchCV
+from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score
+
+# RUN THIS CELL TO IMPORT YOUR DATA. 
+
+air_data = pd.read_csv("Invistico_Airline.csv")
+
+# Display first 10 rows.
+
+air_data.head(10)
+
+# Display variable names and types.
+
+air_data.dtypes
+
+# Identify the number of rows and the number of columns.
+
+air_data.shape
+
+# Get Booleans to find missing values in data.
+# Get Booleans to find missing values along columns.
+# Get the number of rows that contain missing values.
+
+air_data.isna().any(axis=1).sum()
+
+# Drop missing values.
+# Save the DataFrame in variable `air_data_subset`.
+
+air_data_subset = air_data.dropna(axis=0)
+
+# Display the first 10 rows.
+
+air_data_subset.head(10)
+
+# Count of missing values.
+
+air_data_subset.isna().sum()
+
+# Convert categorical features to one-hot encoded features.
+
+air_data_subset_dummies = pd.get_dummies(air_data_subset, 
+                                         columns=['Customer Type','Type of Travel','Class'])
+
+# Display the first 10 rows.
+
+air_data_subset_dummies.head(10)
+
+# Display variables.
+
+air_data_subset_dummies.dtypes
+
+# Separate the dataset into labels (y) and features (X).
+
+y = air_data_subset_dummies["satisfaction"]
+X = air_data_subset_dummies.drop("satisfaction", axis=1)
+
+# Separate into train, validate, test sets.
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
+X_tr, X_val, y_tr, y_val = train_test_split(X_train, y_train, test_size = 0.25, random_state = 0)
+
+# Determine set of hyperparameters.
+
+cv_params = {'n_estimators' : [50,100], 
+              'max_depth' : [10,50],        
+              'min_samples_leaf' : [0.5,1], 
+              'min_samples_split' : [0.001, 0.01],
+              'max_features' : ["sqrt"], 
+              'max_samples' : [.5,.9]}
+
+# Create list of split indices.
+
+split_index = [0 if x in X_val.index else -1 for x in X_train.index]
+custom_split = PredefinedSplit(split_index)
+
+# Instantiate model.
+
+rf = RandomForestClassifier(random_state=0)
+
+# Search over specified parameters.
+
+rf_val = GridSearchCV(rf, cv_params, cv=custom_split, refit='f1', n_jobs = -1, verbose = 1)
+
+%%time
+
+# Fit the model.
+
+rf_val.fit(X_train, y_train)
+
+# Obtain optimal parameters.
+
+rf_val.best_params_
+
+# Use optimal parameters on GridSearchCV.
+
+rf_opt = RandomForestClassifier(n_estimators = 50, max_depth = 50, 
+                                min_samples_leaf = 1, min_samples_split = 0.001,
+                                max_features="sqrt", max_samples = 0.9, random_state = 0)
+
+# Fit the optimal model.
+
+rf_opt.fit(X_train, y_train)
+
+# Predict on test set.
+
+y_pred = rf_opt.predict(X_test)
+
+# Get precision score.
+
+pc_test = precision_score(y_test, y_pred, pos_label = "satisfied")
+print("The precision score is {pc:.3f}".format(pc = pc_test))
+
+# Get recall score.
+
+rc_test = recall_score(y_test, y_pred, pos_label = "satisfied")
+print("The recall score is {rc:.3f}".format(rc = rc_test))
+
+# Get accuracy score.
+
+ac_test = accuracy_score(y_test, y_pred)
+print("The accuracy score is {ac:.3f}".format(ac = ac_test))
+
+# Get F1 score.
+
+f1_test = f1_score(y_test, y_pred, pos_label = "satisfied")
+print("The F1 score is {f1:.3f}".format(f1 = f1_test))
+
+# Precision score on test data set.
+
+print("\nThe precision score is: {pc:.3f}".format(pc = pc_test), "for the test set,", "\nwhich means of all positive predictions,", "{pc_pct:.1f}% prediction are true positive.".format(pc_pct = pc_test * 100))
+
+# Recall score on test data set.
+
+print("\nThe recall score is: {rc:.3f}".format(rc = rc_test), "for the test set,", "\nwhich means of which means of all real positive cases in test set,", "{rc_pct:.1f}% are  predicted positive.".format(rc_pct = rc_test * 100))
+
+# Accuracy score on test data set.
+
+print("\nThe accuracy score is: {ac:.3f}".format(ac = ac_test), "for the test set,", "\nwhich means of all cases in test set,", "{ac_pct:.1f}% are predicted true positive or true negative.".format(ac_pct = ac_test * 100))
+
+# F1 score on test data set.
+
+print("\nThe F1 score is: {f1:.3f}".format(f1 = f1_test), "for the test set,", "\nwhich means the test set's harmonic mean is {f1_pct:.1f}%.".format(f1_pct = f1_test * 100))
+
+# Create table of results.
+
+table = pd.DataFrame()
+table = table.append({'Model': "Tuned Decision Tree",
+                        'F1':  0.945422,
+                        'Recall': 0.935863,
+                        'Precision': 0.955197,
+                        'Accuracy': 0.940864
+                      },
+                        ignore_index=True
+                    )
+
+table = table.append({'Model': "Tuned Random Forest",
+                        'F1':  f1_test,
+                        'Recall': rc_test,
+                        'Precision': pc_test,
+                        'Accuracy': ac_test
+                      },
+                        ignore_index=True
+                    )
+table
+
